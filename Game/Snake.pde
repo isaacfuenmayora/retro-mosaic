@@ -25,7 +25,7 @@ public class SnakeGrid extends Grid{
   }
   boolean move(){ //returns false if lost
     updateApples();
-    direction=lastDirectionalInput;
+    direction=input;
     head.move(direction);
     if(head.i>=grid[0].length || head.i<0 || head.j>=grid.length || head.j<0 || grid[head.i][head.j]>0)
       return false;

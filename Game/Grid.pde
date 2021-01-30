@@ -17,6 +17,7 @@ public abstract class Grid{
       case east:
         return west;
     }
+    print("dir:"+(int)dir);
     return 0;
   }
 }

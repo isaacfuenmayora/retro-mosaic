@@ -9,7 +9,7 @@ void setup(){
 }
 
 void draw(){
-  clear();
+  background(51);
   snak.display();
   if(!snak.move());
     //background(255);
