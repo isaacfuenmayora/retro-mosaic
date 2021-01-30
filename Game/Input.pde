@@ -1,11 +1,4 @@
-/*
-        W     P            1     64
-      A S D              2 4 8
-      <SPACE> M             16   32
-*/
-
 private byte input = 0;
-private byte lastDirectionalInput = 0;
 
 public byte getInput(int rotation){
   if(rotation < 0 || rotation > 3)
@@ -38,16 +31,14 @@ void keyPressed() {
     input = (byte)(input|32);
   if (key=='p')
     input = (byte)(input|64);
-  if(input<32)
-    lastDirectionalInput=input;
 }
 
 void keyReleased() {
   if (key=='w' || (key == CODED && keyCode == UP))
     input = (byte)(input&254);
-  if (key=='s' || (key == CODED && keyCode == LEFT))
+  if (key=='s' || (key == CODED && keyCode == DOWN))
     input = (byte)(input&253);
-  if (key=='a' || (key == CODED && keyCode == DOWN))
+  if (key=='a' || (key == CODED && keyCode == LEFT))
     input = (byte)(input&251);
   if (key=='d' || (key == CODED && keyCode == RIGHT))
     input = (byte)(input&247);
@@ -57,6 +48,10 @@ void keyReleased() {
     input = (byte)(input&223);
   if (key=='p')
     input = (byte)(input&191);
-  //if(input<32)
-  //  lastDirectionalInput=input;
 }
+
+/*
+        W     P            1     64
+      A S D              2 4 8
+      <SPACE> M             16   32
+*/
