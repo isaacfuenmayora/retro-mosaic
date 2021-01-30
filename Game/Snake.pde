@@ -16,23 +16,29 @@ public class SnakeGrid extends Grid{
     tail= new Block(h/2,w-2);
     
     apples = new Apple[numApples+1];
-    for(byte pos=1; pos<= numApples; pos++)
+    for(byte pos=1; pos<apples.length; pos++)
       addApple(pos);
+    timer=0;
     
     scale=(width-frameWidth*2.0f)/w;
     direction=north;
   }
   boolean move(){ //returns false if lost
     updateApples();
+    direction=lastDirectionalInput;
     head.move(direction);
-    if(grid[head.i][head.j]>0 || head.i>=grid[0].length || head.i<0 || head.j>=grid.length || head.j<0){
+    if(head.i>=grid[0].length || head.i<0 || head.j>=grid.length || head.j<0 || grid[head.i][head.j]>0)
       return false;
-    }
-    else if(grid[head.i][head.j]==0){
-      timer--;
-      if(timer==0){
-        tail.move(grid[tail.i][tail.j]);
+    else if(grid[head.i][head.j]==0){   
+      if(timer>0){
+        timer--;
+      }
+      else{
+        byte tailDir = getOppositeDirection(grid[tail.i][tail.j]);
+        println(tailDir);
         grid[tail.i][tail.j]= 0;
+        tail.move(tailDir);
+        println(tail.i+", "+tail.j);
       }
     }
     else{
@@ -42,12 +48,13 @@ public class SnakeGrid extends Grid{
     return true;
   }
   private void updateApples(){
-    for(Apple a: apples)
-      a.update();
+    for(short pos=1; pos<apples.length; pos++)
+      apples[pos].update();
   }
   private void replaceApple(byte pos){
     timer+=apples[pos].getNumLayers();
     snakeLength+=apples[pos].getNumLayers();
+    grid[apples[pos].i][apples[pos].j]=0;
     addApple(pos);
   }  
   private void addApple(byte pos){
@@ -72,6 +79,8 @@ public class SnakeGrid extends Grid{
         else
           fill(200,40,40);
         rect(frameWidth+i*scale,frameWidth+j*scale,scale,scale);
+        fill(255);
+        text(""+(int)grid[i][j],frameWidth+i*scale,frameWidth+j*scale,scale,scale);
       }
     }
   }

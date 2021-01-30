@@ -21,7 +21,7 @@ public abstract class Grid{
   }
 }
 public class Block{
-  protected final static byte north=1, west=2, south=4, east=8;
+  protected final static byte north=1, west=4, south=2, east=8;
   public int i, j;
   Block(int _i, int _j){
     i=_i;
@@ -33,13 +33,13 @@ public class Block{
         j--;
         break;
       case west:
-        i++;
+        i--;
         break;
       case south:
         j++;
         break;
       case east:
-        i--;
+        i++;
         break;
     }
   }
