@@ -1,7 +1,13 @@
+/*
+        W     P            1     64
+      A S D              2 4 8
+      <SPACE> M             16   32
+*/
+
 private byte input = 0;
 
 public byte getInput(int rotation){
-  if(rotation < 0 || rotation > 10)
+  if(rotation < 0 || rotation > 3)
     throw new ArithmeticException("getInput() requires a number in the range [0,3]");
   switch(rotation){
     case 0:
@@ -49,9 +55,3 @@ void keyReleased() {
   if (key=='p')
     input = (byte)(input&191);
 }
-
-/*
-        W     P            1     64
-      A S D              2 4 8
-      <SPACE> M             16   32
-*/
