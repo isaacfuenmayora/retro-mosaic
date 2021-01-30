@@ -43,8 +43,9 @@ void keyReleased() {
      input = (byte)(input&239);
 }
 
+
 /*
-    W            1
-  A S D        2 4 8
-      <SPACE>        16
+    W                1
+  A S D            2 4 8
+      <SPACE> M           16 32
 */
