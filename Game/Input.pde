@@ -1,6 +1,6 @@
 /*
         W     P            1     64
-      A S D              2 4 8
+      A S D              4 2 8
       <SPACE> M             16   32
 */
 
@@ -25,9 +25,9 @@ public byte getInput(int rotation){
 void keyPressed() {
   if (key=='w' || (key == CODED && keyCode == UP))
     input = (byte)(input|1);
-  if (key=='a' || (key == CODED && keyCode == LEFT))
+  if (key=='s' || (key == CODED && keyCode == LEFT))
     input = (byte)(input|2);
-  if (key=='s' || (key == CODED && keyCode == DOWN))
+  if (key=='a' || (key == CODED && keyCode == DOWN))
     input = (byte)(input|4);
   if (key=='d' || (key == CODED && keyCode == RIGHT))
     input = (byte)(input|8);
@@ -42,9 +42,9 @@ void keyPressed() {
 void keyReleased() {
   if (key=='w' || (key == CODED && keyCode == UP))
     input = (byte)(input&254);
-  if (key=='a' || (key == CODED && keyCode == LEFT))
+  if (key=='s' || (key == CODED && keyCode == LEFT))
     input = (byte)(input&253);
-  if (key=='s' || (key == CODED && keyCode == DOWN))
+  if (key=='a' || (key == CODED && keyCode == DOWN))
     input = (byte)(input&251);
   if (key=='d' || (key == CODED && keyCode == RIGHT))
     input = (byte)(input&247);
