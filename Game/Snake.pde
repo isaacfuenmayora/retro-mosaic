@@ -1,76 +1,78 @@
 public class SnakeGrid extends Grid{
   private Block head, tail;
   private int snakeLength;
-  private Apple[] apples;
+  private Apple[] apples;  ////negative index in grid (starting at -1)
   //TODO: poisoned apple
   private int timer;
-  private int scale; //pixels per block
-  SnakeGrid(int w, int h, int numApples){
+  private float scale; //pixels per block
+  SnakeGrid(int w, int h, byte numApples){
     super(w,h);
     snakeLength=3;
-    grid[h-4][w/2]=south;
-    grid[h-3][w/2]=south;
-    grid[h-2][w/2]=south;
+    grid[h/2][w-4]=south;
+    grid[h/2][w-3]=south;
+    grid[h/2][w-2]=south;
     
-    head= new Block(w/2,h-4);
-    tail= new Block(w/2,h-2);
+    head= new Block(h/2,w-4);
+    tail= new Block(h/2,w-2);
     
-    apples = new Apple[numApples];
-    scale=(width-frameWidth*2)/w;
+    apples = new Apple[numApples+1];
+    for(byte pos=1; pos<= numApples; pos++)
+      addApple(pos);
+    
+    scale=(width-frameWidth*2.0f)/w;
     direction=north;
   }
   boolean move(){ //returns false if lost
     updateApples();
     head.move(direction);
-    grid[head.i][head.j]= getOppositeDirection(direction);
     if(grid[head.i][head.j]>0 || head.i>=grid[0].length || head.i<0 || head.j>=grid.length || head.j<0){
       return false;
     }
     else if(grid[head.i][head.j]==0){
       timer--;
-      if(timer>0)
-        return true;
-      tail.move(grid[tail.i][tail.j]);
-      grid[tail.i][tail.j]= 0;
+      if(timer==0){
+        tail.move(grid[tail.i][tail.j]);
+        grid[tail.i][tail.j]= 0;
+      }
     }
     else{
-      replaceApple(head.i, head.j);
+      replaceApple((byte)-grid[head.i][head.j]);
     }
+    grid[head.i][head.j]= getOppositeDirection(direction);
     return true;
   }
-  void updateApples(){
+  private void updateApples(){
     for(Apple a: apples)
       a.update();
   }
-  void replaceApple(int i, int j){
-    int pos=0;
-    while(apples[pos].i!=i || apples[pos].j!=j){
-      pos++;
-    }
+  private void replaceApple(byte pos){
     timer+=apples[pos].getNumLayers();
     snakeLength+=apples[pos].getNumLayers();
-    int ni = (int)random(0,grid.length+1), nj = (int)random(0,grid[0].length+1);
-    while(grid[i][j]!=0){
-      ni = (int)random(0,grid.length+1);
-      nj = (int)random(0,grid[0].length+1);
+    addApple(pos);
+  }  
+  private void addApple(byte pos){
+    int ni = (int)random(0,grid.length), nj = (int)random(0,grid[0].length);
+    while(grid[ni][nj]!=0){
+      ni = (int)random(0,grid.length);
+      nj = (int)random(0,grid[0].length);
     }
+    grid[ni][nj]=(byte)(-pos);
     apples[pos] = new Apple(ni,nj);
   }
-  void display(){
+  void display(){ //FIXME: draw frame instead of black boxes, much more efficient (?)
     background(51);
+    stroke(255);
     for(int i = 0; i < grid.length; i++){
       for(int j = 0; j < grid[0].length; j++){
+        fill(100,100,150);
         if(grid[i][j]==0)
           fill(0);
-        else if(grid[i][j]>0){
+        else if(grid[i][j]>0)
           fill(70,70,150);
-          print("bruh");
-        }
         else
-          fill(200,20,20);
+          fill(200,40,40);
         rect(frameWidth+i*scale,frameWidth+j*scale,scale,scale);
       }
-      print();
     }
   }
 }

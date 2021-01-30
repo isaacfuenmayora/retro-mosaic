@@ -2,8 +2,9 @@
 SnakeGrid snak;
 
 void setup(){
-  size(512,512);
-  snak = new SnakeGrid(512,512,1);
+  size(515,515);
+  byte numApples = 3;
+  snak = new SnakeGrid(11,11,numApples);
 }
 
 void draw(){
