@@ -1,21 +1,89 @@
-//George Rauta
 int gameFrameRate = 60;
 int displayWidth = 640;
 int displayHeight = displayWidth / 4 * 3;
+
 PlayerShip player;
+
+int enemyShipLimit = 1;
+ArrayList<EnemyShip> enemyShips;
+
+int playerProjectilesLimit = 5;
+ArrayList<Projectile> playerProjectiles;
+
+int enemyProjectilesLimit = 5;
+ArrayList<Projectile> enemyProjectiles;
+
 
 
 void setup(){
   frameRate(gameFrameRate);
   size(displayWidth, displayHeight);
   player = new PlayerShip(displayWidth / 2, displayHeight * 7 / 8, displayWidth / 64, 1, 5);
+  enemyShips = new ArrayList<EnemyShip>();
+  playerProjectiles = new ArrayList<Projectile>();
+  enemyProjectiles = new ArrayList<Projectile>();
 }
 
 void draw(){
   background(50, 50, 50);
   player.drawModel(0, 255, 0);
+  createNewEnemies();
+  for(EnemyShip es : enemyShips){
+    es.drawModel();
+  }
   player.movePlayer();
-  //Figure out how to keep track of all projectiles and if they hit something
+  playerFireTurn();
+}
+
+void createNewEnemies(){
+  if(enemyShips.size() < enemyShipLimit){
+    enemyShips.add(new EnemyShip(displayWidth / 2, displayHeight / 8, displayWidth / 64, 3, 1, 255, 0, 0));
+  }
+}
+  
+void playerFireTurn(){
+  println(playerProjectiles.size());
+  if(player.isFiring() && (playerProjectiles.size() < playerProjectilesLimit)){
+    playerProjectiles.add(new Projectile(player.getPosX(), player.getPosY(), displayWidth / 128, 2));
+    println("Firing");
+  } 
+}
+  
+void playerHitTurn(){
+  //Check if player projectiles hit enemies
+}
+
+void enemyFireTurn(){
+  // Allow enemies to fire
+}
+
+void enemyHitTurn(){
+  //Check if enemy projectiles hit player
+}
+
+public class EnemyShip extends Ship{
+  int R;
+  int B;
+  int G;
+  
+  public EnemyShip(int posX, int posY, int hitboxRadius, int whoseHitbox, int life, int R, int B, int G){
+    super(posX, posY, hitboxRadius, whoseHitbox, life);
+    this.R = R;
+    this.B = B;
+    this.G = G;
+  }
+  
+  void moveEnemy(){
+    //Move somehow idk
+  }
+  
+  void drawModel(){
+    rectMode(RADIUS);
+    fill(R, B, G);
+    square(posX, posY, hitboxRadius);
+    //Delete later
+    super.debug_showHitbox();
+  }
 }
 
 public class Hitbox{
@@ -54,27 +122,6 @@ public class Hitbox{
   }
 }
 
-public class Ship extends Hitbox{
-  protected int life;
-  
-  public Ship(int posX, int posY, int hitboxRadius, int whoseHitbox, int life){
-    super(posX, posY, hitboxRadius, whoseHitbox);
-    this.life = life;
-  }
-  
-  void drawModel(int R, int B, int G){    
-    rectMode(RADIUS);
-    fill(R, B, G);
-    square(posX, posY, hitboxRadius);
-    //Delete later
-    super.debug_showHitbox();
-  }
-  
-  void fireProjectile(){
-    
-  }
-}
-
 public class PlayerShip extends Ship{
     
   public PlayerShip(int posX, int posY, int hitboxRadius, int whoseHitbox, int life){
@@ -90,15 +137,10 @@ public class PlayerShip extends Ship{
       posX += 2;
     }
   }
-}
-
-public class EnemyShip extends Ship{
-  public EnemyShip(int posX, int posY, int hitboxRadius, int whoseHitbox, int life){
-    super(posX, posY, hitboxRadius, whoseHitbox, life);
-  }
   
-  void moveEnemy(){
-    //Move somehow idk
+  //Prevent firing multiple times when pressed, on click only
+  boolean isFiring(){
+    return (keyPressed && key == ' ');
   }
 }
 
@@ -115,5 +157,30 @@ public class Projectile extends Hitbox{
     else if(whoseHitbox == 4){
       //Move down
     }
+  }
+}
+
+public class Ship extends Hitbox{
+  protected int life;
+  
+  public Ship(int posX, int posY, int hitboxRadius, int whoseHitbox, int life){
+    super(posX, posY, hitboxRadius, whoseHitbox);
+    this.life = life;
+  }
+  
+  int getLife(){
+    return life;
+  }
+  
+  void setLife(int damage){
+    life = life - damage;
+  }
+  
+  void drawModel(int R, int B, int G){    
+    rectMode(RADIUS);
+    fill(R, B, G);
+    square(posX, posY, hitboxRadius);
+    //Delete later
+    super.debug_showHitbox();
   }
 }
