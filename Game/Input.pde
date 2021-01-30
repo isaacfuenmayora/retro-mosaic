@@ -1,8 +1,6 @@
 private byte input = 0;
 
 public byte getInput(int rotation){
-  if(rotation < 0 || rotation > 3)
-    throw new ArithmeticException("getInput() only accepts values in the  range [0,3]");  
   switch(rotation){
     case 0:
       return input;
@@ -20,33 +18,29 @@ public byte getInput(int rotation){
 }
 
 void keyPressed() {
-   if(key=='w' || (key == CODED && keyCode == UP))    //W or ↑
+   if (key=='w')
      input = (byte)(input|1);
-   if(key=='a' || (key == CODED && keyCode == LEFT))  //A or ←
+   if (key=='a')
      input = (byte)(input|2);
-   if(key=='s' || (key == CODED && keyCode == DOWN))  //S or ↓
+   if (key=='s')
      input = (byte)(input|4);
-   if(key=='d' || (key == CODED && keyCode == RIGHT)) //D or →
+   if (key=='d')
      input = (byte)(input|8);
-   if(key==' ')                                       //<SPACE>
+   if (key==' ')
      input = (byte)(input|16);
-   if(key=='m')                                       //M
-     input = (byte)(input|32);
 }
 
 void keyReleased() {
-   if(key=='w' || (key == CODED && keyCode == UP))
+   if (key=='w')
      input = (byte)(input&254);
-   if(key=='a' || (key == CODED && keyCode == LEFT))
+   if (key=='a')
      input = (byte)(input&253);
-   if(key=='s' || (key == CODED && keyCode == DOWN))
+   if (key=='s')
      input = (byte)(input&251);
-   if(key=='d' || (key == CODED && keyCode == RIGHT))
+   if (key=='d')
      input = (byte)(input&247);
-   if(key==' ')
+   if (key==' ')
      input = (byte)(input&239);
-   if(key=='m')
-     input = (byte)(input&223);
 }
 
 /*
