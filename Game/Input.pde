@@ -2,7 +2,7 @@ private byte input = 0;
 
 public byte getInput(int rotation){
   if(rotation < 0 || rotation > 3)
-    throw new ArithmeticException("getInput() requires a number in the range [0,3]");
+    throw new ArithmeticException("getInput() requires a number in the range [0,3]. Given: " + rotation);
   switch(rotation){
     case 0:
       return input;
