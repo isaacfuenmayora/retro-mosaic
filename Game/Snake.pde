@@ -13,7 +13,6 @@ public class SnakeGrid extends Grid{
     grid[h/2][w-2]=south;
     
     head= new Block(h/2,w-4);
-    tail= new Block(h/2,w-2);
     
     apples = new Apple[numApples+1];
     for(byte pos=1; pos<apples.length; pos++)
@@ -21,11 +20,15 @@ public class SnakeGrid extends Grid{
     timer=0;
     
     scale=(width-frameWidth*2.0f)/w;
-    direction=north;
   }
   boolean move(){ //returns false if lost
+    if(!lastInputs.isEmpty()){
+      if(lastInputs.peek()!=getOppositeDirection(direction))
+        direction=lastInputs.poll();
+      else
+        lastInputs.poll();
+    }
     updateApples();
-    direction=input;
     head.move(direction);
     if(head.i>=grid[0].length || head.i<0 || head.j>=grid.length || head.j<0 || grid[head.i][head.j]>0)
       return false;
@@ -34,18 +37,35 @@ public class SnakeGrid extends Grid{
         timer--;
       }
       else{
-        byte tailDir = getOppositeDirection(grid[tail.i][tail.j]);
-        println(tailDir);
-        grid[tail.i][tail.j]= 0;
-        tail.move(tailDir);
-        println(tail.i+", "+tail.j);
+        removeTail(head.i,head.j);
       }
     }
     else{
       replaceApple((byte)-grid[head.i][head.j]);
     }
     grid[head.i][head.j]= getOppositeDirection(direction);
+    if(lastInputs.size()>1)
+      lastInputs.poll();
     return true;
+  }
+  private void removeTail(int i, int j){
+    int pi=i, pj=j;
+    while(i<0 && i>grid.length && j<0 && j>grid[0].length && grid[i][j]<0){
+      switch(grid[pi][pj]){
+        case north:
+          j--;
+          break;
+        case west:
+          i--;
+          break;
+        case south:
+          j++;
+          break;
+        case east:
+          i++;
+          break;
+      }
+    }
   }
   private void updateApples(){
     for(short pos=1; pos<apples.length; pos++)

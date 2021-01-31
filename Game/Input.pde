@@ -1,4 +1,5 @@
-private byte input = 0;
+byte input = 0;
+Queue<Byte> lastInputs = new PriorityQueue<Byte>(3); 
 
 public byte getInput(int rotation){
   if(rotation < 0 || rotation > 3)
@@ -15,22 +16,47 @@ public byte getInput(int rotation){
   }
   return input;
 }
-
+private void updateLastInputs(byte singleInput){
+  if(lastInputs.size()<4)
+    lastInputs.add(singleInput);
+}
 void keyPressed() {
-  if (key=='w' || (key == CODED && keyCode == UP))
-    input = (byte)(input|1);
-  if (key=='s' || (key == CODED && keyCode == DOWN))
-    input = (byte)(input|2);
-  if (key=='a' || (key == CODED && keyCode == LEFT))
-    input = (byte)(input|4);
-  if (key=='d' || (key == CODED && keyCode == RIGHT))
-    input = (byte)(input|8);
-  if (key==' ')
-    input = (byte)(input|16);
-  if (key=='m')
-    input = (byte)(input|32);
-  if (key=='p')
-    input = (byte)(input|64);
+  byte singleInput;
+  if (key=='w' || (key == CODED && keyCode == UP)){
+    singleInput=(byte)(input|1);
+    input = singleInput;
+    updateLastInputs(singleInput);
+  }
+  if (key=='s' || (key == CODED && keyCode == DOWN)){
+    singleInput=(byte)(input|2);
+    input = singleInput;
+    updateLastInputs(singleInput);
+  }
+  if (key=='a' || (key == CODED && keyCode == LEFT)){
+    singleInput=(byte)(input|4);
+    input = singleInput;
+    updateLastInputs(singleInput);
+  }
+  if (key=='d' || (key == CODED && keyCode == RIGHT)){
+    singleInput=(byte)(input|8);
+    input = singleInput;
+    updateLastInputs(singleInput);
+  }
+  if (key==' '){
+    singleInput=(byte)(input|16);
+    input = singleInput;
+    updateLastInputs(singleInput);
+  }
+  if (key=='m'){
+    singleInput=(byte)(input|32);
+    input = singleInput;
+    updateLastInputs(singleInput);
+  }
+  if (key=='p'){
+    singleInput=(byte)(input|64);
+    input = singleInput;
+    updateLastInputs(singleInput);
+  }
 }
 
 void keyReleased() {

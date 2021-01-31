@@ -1,7 +1,7 @@
 public abstract class Grid{
   protected final static byte north=1, west=4, south=2, east=8;
   protected final float frameWidth=15;
-  protected byte direction; 
+  protected byte direction;
   protected byte[][] grid;
   Grid(int w, int h){
     grid = new byte[h][w];
