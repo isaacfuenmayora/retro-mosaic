@@ -1,4 +1,7 @@
-private byte input = 0;
+byte input = 0;
+byte previousInput = 0;
+byte lastOne = 0;
+byte lastTwo = 0;
 
 public byte getInput(int rotation){
   if(rotation < 0 || rotation > 3)
@@ -17,20 +20,31 @@ public byte getInput(int rotation){
 }
 
 void keyPressed() {
-  if (key=='w' || (key == CODED && keyCode == UP))
-    input = (byte)(input|1);
-  if (key=='s' || (key == CODED && keyCode == DOWN))
-    input = (byte)(input|2);
-  if (key=='a' || (key == CODED && keyCode == LEFT))
-    input = (byte)(input|4);
-  if (key=='d' || (key == CODED && keyCode == RIGHT))
-    input = (byte)(input|8);
-  if (key==' ')
-    input = (byte)(input|16);
-  if (key=='m')
-    input = (byte)(input|32);
-  if (key=='p')
-    input = (byte)(input|64);
+  if (key=='w' || (key == CODED && keyCode == UP)){
+    input=(byte)(input|1);
+    push();
+  }
+  if (key=='s' || (key == CODED && keyCode == DOWN)){
+    input=(byte)(input|2);
+    push();
+  }
+  if (key=='a' || (key == CODED && keyCode == LEFT)){
+    input=(byte)(input|4);
+    push();
+  }
+  if (key=='d' || (key == CODED && keyCode == RIGHT)){
+    input=(byte)(input|8);
+    push();
+  }
+  if (key==' '){
+    input=(byte)(input|16);
+  }
+  if (key=='m'){
+    input=(byte)(input|32);
+  }
+  if (key=='p'){
+    input=(byte)(input|64);
+  }
 }
 
 void keyReleased() {
@@ -48,6 +62,21 @@ void keyReleased() {
     input = (byte)(input&223);
   if (key=='p')
     input = (byte)(input&191);
+}
+
+public void push(){
+  if(lastOne == 0){
+    lastOne = (byte)(input&15);
+  } else if(lastTwo == 0 && (input&15)!=lastOne){
+    lastTwo = (byte)(input&15);
+  }
+}
+
+public byte poll(){
+  byte temp = lastOne;
+  lastOne = lastTwo;
+  lastTwo = 0;
+  return temp;
 }
 
 /*
