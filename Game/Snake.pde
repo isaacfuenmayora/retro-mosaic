@@ -29,7 +29,9 @@ public class SnakeGrid extends Grid{
     head.move(direction);
     if(head.i>=grid[0].length || head.i<0 || head.j>=grid.length || head.j<0 || grid[head.i][head.j]>0)
       return false;
-    else if(grid[head.i][head.j]==0){   
+    byte consumed = grid[head.i][head.j];
+    grid[head.i][head.j]= getOppositeDirection(direction);
+    if(consumed==0){   
       if(timer>0){
         timer--;
       }
@@ -42,11 +44,38 @@ public class SnakeGrid extends Grid{
       }
     }
     else{
-      replaceApple((byte)-grid[head.i][head.j]);
+      replaceApple((byte)-consumed);
     }
+<<<<<<< Updated upstream
     grid[head.i][head.j]= getOppositeDirection(direction);
     return true;
   }
+=======
+    return true;
+  }
+  private void removeTail(int i, int j){
+    int pi=i, pj=j;
+    while(i>=0 && i<grid.length && j>=0 && j<grid[0].length && grid[i][j]>0){
+      pi=i;
+      pj=j;
+      switch(grid[pi][pj]){
+        case north:
+          j--;
+          break;
+        case west:
+          i--;
+          break;
+        case south:
+          j++;
+          break;
+        case east:
+          i++;
+          break;
+      }
+    }
+    grid[pi][pj]=0;
+  }
+>>>>>>> Stashed changes
   private void updateApples(){
     for(short pos=1; pos<apples.length; pos++)
       apples[pos].update();
@@ -54,7 +83,6 @@ public class SnakeGrid extends Grid{
   private void replaceApple(byte pos){
     timer+=apples[pos].getNumLayers();
     snakeLength+=apples[pos].getNumLayers();
-    grid[apples[pos].i][apples[pos].j]=0;
     addApple(pos);
   }  
   private void addApple(byte pos){
