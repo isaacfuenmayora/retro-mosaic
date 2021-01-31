@@ -1,7 +1,11 @@
 int gameFrameRate = 60;
 int displayWidth = 640;
 int displayHeight = displayWidth / 4 * 3;
-
+float[] starMapX;
+float[] starMapY;
+int[] starMapColor;
+float[] starMapSize;
+int stars = 50;
 
 PlayerShip player;
 
@@ -21,32 +25,25 @@ int projectileSize = displayWidth / 128;
 void setup(){
   frameRate(gameFrameRate);
   size(displayWidth, displayHeight);
-  player = new PlayerShip(displayWidth / 2, displayHeight * 7 / 8, displayWidth / 64, 1, 5, 0, 0, 255);
+  //Starting x pos, y pos, ship radius, player = 1, life, R, G, B
+  player = new PlayerShip(displayWidth / 2, displayHeight * 7 / 8, displayWidth / 64, 1, 5, 0, 255, 0);
   enemyShips = new ArrayList<EnemyShip>();
   playerProjectiles = new ArrayList<Projectile>();
   enemyProjectiles = new ArrayList<Projectile>();
+  generateStars();
 }
 
 void draw(){
-  background(75, 75, 75);
+  generateBackground();
   
   player.drawModel();
   player.incrementCounter();
   
   createNewEnemies();
-  for(EnemyShip es : enemyShips){
-    es.drawModel();
-    es.incrementCounter();
-  }
+  drawEnemies();
   
   player.movePlayer();
-  for(int i = 0; i < enemyShips.size(); i++){
-    enemyShips.get(i).moveEnemy();
-    if(enemyShips.get(i).isOffMap()){
-      enemyShips.remove(i);
-      i--;
-    }
-  }
+  moveEnemies();
   
   playerFireTurn();
   enemyFireTurn();
@@ -56,6 +53,24 @@ void draw(){
   
 }
 
+void drawEnemies(){
+    for(EnemyShip es : enemyShips){
+    es.drawModel();
+    es.incrementCounter();
+  }
+}
+
+void moveEnemies(){
+    for(int i = 0; i < enemyShips.size(); i++){
+    enemyShips.get(i).moveEnemy();
+    if(enemyShips.get(i).isOffMap()){
+      enemyShips.remove(i);
+      i--;
+    }
+  }
+}
+
+//Fill the game with new enemies 
 void createNewEnemies(){
   if(enemyShips.size() < enemyShipLimit){
     //X pos, Y pos, radius of ship, hp, enemy = 3, R, G, B
@@ -63,10 +78,11 @@ void createNewEnemies(){
   }
 }
   
+//checks if player wants to fire and shoots off new projectiles
 void playerFireTurn(){
   if(player.isFiring() && (playerProjectiles.size() < playerProjectilesLimit) && player.getCounter() >= 10){
     //X pos, Y pos, radius of projectile, player projectile = 2, R, G, B
-    playerProjectiles.add(new Projectile(player.getPosX(), player.getPosY(), projectileSize, 2, 0, 0, 255));
+    playerProjectiles.add(new Projectile(player.getPosX(), player.getPosY(), projectileSize, 2, 0, 255, 0));
     player.resetCounter();
   } 
   for(Projectile p : playerProjectiles){
@@ -74,7 +90,8 @@ void playerFireTurn(){
     p.moveProjectile();
   }
 }
-  
+
+//checks if any player projectiles hit any enemies
 void playerHitTurn(){
   //Check if player projectiles hit enemies
   for(int i = 0; i < enemyShips.size(); i++){
@@ -96,10 +113,11 @@ void playerHitTurn(){
   }
 }
 
+//Enemy ai shoots off new projectiles to the player
 void enemyFireTurn(){
   if(enemyProjectiles.size() < enemyProjectilesLimit){
     for(EnemyShip es : enemyShips){
-      if(random(0, 1) > 0.98 || (es.getCounter() >= 15 && es.getPosX() <= (player.getPosX() + projectileSize) && es.getPosX() > (player.getPosX() - projectileSize))){
+      if(random(0, 1) > 0.99 || (es.getCounter() >= 15 && es.getPosX() <= (player.getPosX() + projectileSize) && es.getPosX() > (player.getPosX() - projectileSize))){
         //X pos, Y pos, radius of projectile, enemy projectile = 4, R, G, B
         enemyProjectiles.add(new Projectile(es.getPosX(), es.getPosY(), projectileSize, 4, 255, 0, 0));
         es.resetCounter();
@@ -112,6 +130,7 @@ void enemyFireTurn(){
     }
 }
 
+//checks if enemy projectiles hit the player
 void enemyHitTurn(){
   for(int i = 0; i < enemyProjectiles.size(); i++){
     if(player.isHit(enemyProjectiles.get(i))){
@@ -124,6 +143,28 @@ void enemyHitTurn(){
       enemyProjectiles.remove(i);
       i--;
     }
+  }
+}
+
+void generateStars(){
+  starMapX = new float[50];
+  starMapY = new float[50];
+  starMapColor = new int[50];
+  starMapSize = new float[50];
+  for(int i = 0; i < stars; i++){
+    starMapX[i] = random(0, displayWidth);
+    starMapY[i] = random(0, displayHeight);
+    starMapColor[i] = int(random(0, 255));
+    starMapSize[i] = random(0, 4);
+  }
+}
+
+void generateBackground(){
+  background(25, 25, 25);
+  for(int i = 0; i < stars; i++){
+    ellipseMode(RADIUS);
+    fill(255, 255, starMapColor[i]);
+    circle(starMapX[i], starMapY[i], starMapSize[i]);
   }
 }
 
@@ -191,6 +232,8 @@ public class Hitbox{
 }
 
 public class PlayerShip extends Ship{
+  
+  int playerMovementSpeed = 3;
     
   public PlayerShip(int posX, int posY, int hitboxRadius, int whoseHitbox, int life, int R, int G, int B){
     super(posX, posY, hitboxRadius, whoseHitbox, life, R, G, B);
@@ -198,11 +241,11 @@ public class PlayerShip extends Ship{
   
   void movePlayer(){
     if(keyPressed && key == 'a' && !(posX <= hitboxRadius)){
-      posX += -2;
+      posX += -1 * playerMovementSpeed;
     }
     
     if(keyPressed && key == 'd' && !(posX >= displayWidth - hitboxRadius)){
-      posX += 2;
+      posX += playerMovementSpeed;
     }
   }
   
@@ -286,9 +329,9 @@ public class Ship extends Hitbox{
   
   void drawModel(){    
     rectMode(RADIUS);
-    fill(R, B, G);
+    fill(R, G, B);
     square(posX, posY, hitboxRadius);
     //Delete later
-    super.debug_showHitbox();
+    //super.debug_showHitbox();
   }
 }
